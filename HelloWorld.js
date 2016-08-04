@@ -8,14 +8,14 @@ var percentage = 0.5
 var numberOfPossibleSolutions = 0
 
 const problems = '{ "problems" : [' +
-'{ "problem":"white graphics" , "solution":"install 2017", "matchNumber":"", "isUsed" : "" },' +
-'{ "problem":"white graphics" , "solution":"new driver", "matchNumber":"", "isUsed" : "" },' +
-'{ "problem":"white graphics when installing the program" , "solution":"new driver", "matchNumber":"", "isUsed" : "" },' +
-'{ "problem":"black graphics" , "solution":"install 2016", "matchNumber":"", "isUsed" : "" } ]}';
+'{ "problem":"hvit grafikk" , "solution":"installer 2017-utgaven", "matchNumber":"", "isUsed" : "" },' +
+'{ "problem":"hvit grafikk" , "solution":"oppdater driveren", "matchNumber":"", "isUsed" : "" },' +
+'{ "problem":"hvit grafikk når jeg installerer programmet" , "solution":"oppdater driveren", "matchNumber":"", "isUsed" : "" },' +
+'{ "problem":"svart grafikk" , "solution":"installer 2016-utgaven", "matchNumber":"", "isUsed" : "" } ]}';
 
 const usedUpProblems = '{ }';
 const JSONproblems = JSON.parse(problems)
-const noSolution = 'No solution man, call Olav maaaaan'
+const noSolution = 'Jeg beklager, men jeg kan ikke hjelpe deg. Ring Olav 1.0'
 
 var response = function(string)
 {
@@ -94,20 +94,20 @@ bot.dialog('/', [
     },
     function (session, results) {
         clearData()
-        session.send('later, dude')
+        session.send('Ha det på badet')
     }
 ]);
 bot.dialog('/profile', [
     function (session) {
         if(solution === undefined)
-            builder.Prompts.text(session, 'Hi! What is your problem dude?')
+            builder.Prompts.text(session, 'Hei! Jeg er en digital Olav. Du kan kalle meg Olav 2.0. Hva kan jeg hjelpe deg med?')
         else if (solution === noSolution)
         {
            session.send(solution)
            session.endDialog()
         }
         else
-            builder.Prompts.text(session, 'Suggestion: ' + solution + '\n\tDid this solve your problem, man?')
+            builder.Prompts.text(session, 'Forslag: ' + solution + '.\n\tLøste det problemet ditt?')
     },
     function (session, results) {
         if(userProblem === undefined)
@@ -116,7 +116,7 @@ bot.dialog('/profile', [
             setMatchNumber(userProblem)
         }
         solution = response(userProblem);        
-        if(results.response === "yes")
+        if(results.response === "ja")
             session.endDialog()
         else
             session.beginDialog('/profile')
