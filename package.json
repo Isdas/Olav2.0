@@ -1,16 +1,25 @@
 {
-  "name": "bot",
+  "name": "olav2.0",
   "version": "1.0.0",
-  "description": "",
+  "description": "Olav as a bot",
   "main": "HelloWorld.js",
   "dependencies": {
     "botbuilder": "^1.0.1",
-    "restify": "^4.1.0"
+    "botbuilder-calling": "^3.0.0",
+    "restify": "^4.1.1"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Isdas/Olav2.0.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Isdas/Olav2.0/issues"
+  },
+  "homepage": "https://github.com/Isdas/Olav2.0#readme"
 }

@@ -72,9 +72,22 @@ function clearData(){
     }
 }
 
+// Setup Restify Server
+var server = restify.createServer();
+server.listen(process.env.port || process.env.PORT || 3978, function () {
+   console.log('%s listening to %s', server.name, server.url); 
+});
+  
+// Create chat bot
+var connector = new builder.ChatConnector({
+    appId: 'cadfc57f-59e6-4fd7-a4bb-63a338f97c7d',
+    appPassword: 'yWcDPt69UgbfOUEhV6LXXrh',
+});
+var bot = new builder.UniversalBot(connector);
+server.post('/api/messages', connector.listen());
+
 // Create bot and add dialogs
-var bot = new builder.BotConnectorBot({ appId: 'b67bd053-8309-4d5c-a627-f9325e85ce1c', appSecret: 'gfeE0zuWSuhmTHv8j5Fi8Wt' })
-bot.add('/', [
+bot.dialog('/', [
     function (session, args, next) {
         clearData()
         session.beginDialog('/profile')
@@ -84,7 +97,7 @@ bot.add('/', [
         session.send('later, dude')
     }
 ]);
-bot.add('/profile', [
+bot.dialog('/profile', [
     function (session) {
         if(solution === undefined)
             builder.Prompts.text(session, 'Hi! What is your problem dude?')
@@ -108,11 +121,4 @@ bot.add('/profile', [
         else
             session.beginDialog('/profile')
     }
-]); 
-
-// Setup Restify Server
-var server = restify.createServer();
-server.post('/api/messages', bot.verifyBotFramework(), bot.listen());
-server.listen(process.env.port || 3978, function () {
-    console.log('%s listening to %s', server.name, server.url); 
-});
+]);
