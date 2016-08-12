@@ -16,43 +16,114 @@ var bot = new builder.UniversalBot(connector)
 
 server.post('/api/messages', connector.listen())
 
-var helloWorld = require('./helloWorld')
 var constants = require('./constants')
 
 // Create bot and add dialogs
 bot.dialog('/', [
     function (session, args, next) {
-        helloWorld.clearData()
+        problemLogic.clearData()
         session.beginDialog('/profile')
     },
     function (session, results) {
-        helloWorld.clearData()
+        problemLogic.clearData()
         session.send('Ha det på badet')
         session.endDialog()
     }
 ])
 bot.dialog('/profile', [
     function (session) {
-        if(helloWorld.solution === undefined)
+        if(problemLogic.solution === undefined)
             builder.Prompts.text(session, 'Hei! Jeg er en digital Olav. Du kan kalle meg Olav 2.0. Hva kan jeg hjelpe deg med?')
-        else if (helloWorld.solution === constants.noSolution)
+        else if (problemLogic.solution === constants.noSolution)
         {
-            session.send(helloWorld.solution)
+            session.send(problemLogic.solution)
             session.endDialog()
         }
         else
-            builder.Prompts.text(session, 'Forslag: ' + helloWorld.solution + '.\n\tLøste det problemet ditt?')
+            builder.Prompts.text(session, 'Forslag: ' + problemLogic.solution + '.\n\tLøste det problemet ditt?')
     },
     function (session, results) {
-        if(helloWorld.userProblem === undefined)
+        if(problemLogic.userProblem === undefined)
         {
-            helloWorld.userProblem = results.response
-            helloWorld.setMatchNumber(helloWorld.userProblem)
+            problemLogic.userProblem = results.response
+            problemLogic.setMatchNumber(problemLogic.userProblem)
         }
-        helloWorld.solution = helloWorld.response(helloWorld.userProblem)
+        problemLogic.solution = problemLogic.response(problemLogic.userProblem)
         if(results.response === "ja")
             session.endDialog()
         else
             session.beginDialog('/profile')
     }
 ])
+
+let problemLogic = {
+    solution: undefined,
+    userProblem: undefined,
+    highestMatch: 0,
+    percentage: 0.5,
+    numberOfPossibleSolutions: 0,
+
+    usedUpProblems: '{ }',
+    JSONproblems: JSON.parse('{ "problems" : [' +
+    '{ "problem":"hvit grafikk" , "solution":"installer 2017-utgaven", "matchNumber":"", "isUsed" : "" },' +
+    '{ "problem":"hvit grafikk" , "solution":"oppdater driveren", "matchNumber":"", "isUsed" : "" },' +
+    '{ "problem":"hvit grafikk når jeg installerer programmet" , "solution":"oppdater driveren", "matchNumber":"", "isUsed" : "" },' +
+    '{ "problem":"svart grafikk" , "solution":"installer 2016-utgaven", "matchNumber":"", "isUsed" : "" } ]}'),
+
+    response: function(string)
+    {
+        let index = 0
+        let currentHighestMatch = 0
+        for(var i=0; i < this.JSONproblems.problems.length; i++)
+        {
+            if(this.JSONproblems.problems[i].isUsed === '' && this.JSONproblems.problems[i].matchNumber > currentHighestMatch)
+            {
+                currentHighestMatch = this.JSONproblems.problems[i].matchNumber
+                index = i
+            }
+        }
+        if(this.highestMatch * this.percentage < currentHighestMatch){
+            this.JSONproblems.problems[index].isUsed = true        
+            return this.JSONproblems.problems[index].solution
+        }
+
+        let constants = require('./constants')
+        return constants.noSolution
+    },
+
+    getMatchNumber: function(knownProblem, userProblem){
+        let m = 0;
+        let userProblemWords = userProblem.split(' ')
+        let knownProblemWords = knownProblem.split(' ')
+        for(i = 0; i < userProblemWords.length; i++){
+            for(j = 0; j < knownProblemWords.length; j++){
+                if(userProblemWords[i] === knownProblemWords[j]) m++
+            }
+        }
+        return m
+    },
+
+    setMatchNumber: function(string){
+        this.numberOfPossibleSolutions = 0
+        for(var i=0; i < this.JSONproblems.problems.length; i++)
+            this.JSONproblems.problems[i].matchNumber = this.getMatchNumber(this.JSONproblems.problems[i].problem, string);
+        
+        for(var i=0; i < this.JSONproblems.problems.length; i++)
+            if(this.JSONproblems.problems[i].isUsed === '' && this.JSONproblems.problems[i].matchNumber > this.highestMatch)
+                this.highestMatch = this.JSONproblems.problems[i].matchNumber
+                
+        for(var i=0; i < this.JSONproblems.problems.length; i++)
+            if(this.JSONproblems.problems[i].isUsed === '' && this.JSONproblems.problems[i].matchNumber > this.highestMatch * this.percentage)
+                this.numberOfPossibleSolutions++
+    },
+
+    clearData: function(){
+        this.highestMatch = 0
+        this.solution = undefined
+        this.userProblem = undefined
+        for(var i=0; i < this.JSONproblems.problems.length; i++){
+            this.JSONproblems.problems[i].matchNumber = ""
+            this.JSONproblems.problems[i].isUsed = ""
+        }
+    }
+}
