@@ -83,7 +83,11 @@ let sessionEndChecker ={
         'yapp',
         'Jada',
         'det løste problemet',
-        'muligens'
+        'muligens',
+        'såklart',
+        'så klart',
+        'selvsagt',
+        'det virker sånn'
     ],
     shouldSessionEnd: function(string){
         if(sessionEndSentences.indexOf(string.replace(/\W/g, '').split(' ').first()) > -1) return true;
