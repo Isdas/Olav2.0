@@ -64,11 +64,7 @@ let problemLogic = {
     numberOfPossibleSolutions: 0,
 
     usedUpProblems: '{ }',
-    JSONproblems: JSON.parse('{ "problems" : [' +
-    '{ "problem":"hvit grafikk" , "solution":"installer 2017-utgaven", "matchNumber":"", "isUsed" : "" },' +
-    '{ "problem":"hvit grafikk" , "solution":"oppdater driveren", "matchNumber":"", "isUsed" : "" },' +
-    '{ "problem":"hvit grafikk når jeg installerer programmet" , "solution":"oppdater driveren", "matchNumber":"", "isUsed" : "" },' +
-    '{ "problem":"svart grafikk" , "solution":"installer 2016-utgaven", "matchNumber":"", "isUsed" : "" } ]}'),
+    JSONproblems: JSON.parse(constants.problems),
 
     response: function(string)
     {
@@ -87,7 +83,6 @@ let problemLogic = {
             return this.JSONproblems.problems[index].solution
         }
 
-        let constants = require('./constants')
         return constants.noSolution
     },
 
