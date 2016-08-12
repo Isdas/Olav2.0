@@ -61,12 +61,16 @@ bot.dialog('/profile', [
             problemLogic.setMatchNumber(problemLogic.userProblem)
         }
         problemLogic.solution = problemLogic.response(problemLogic.userProblem)
-        if(results.response === "ja")
+        if(wordMatches(results.response,"ja"))
             session.endDialog()
         else
             session.beginDialog('/profile')
     }
 ])
+
+function wordMatches(word1, word2){
+    return word1.toLowerCase() === word2.toLowerCase();
+}
 
 let prefix = {
     prefixCollection: [
@@ -157,7 +161,7 @@ let problemLogic = {
         let knownProblemWords = knownProblem.split(' ')
         for(i = 0; i < userProblemWords.length; i++){
             for(j = 0; j < knownProblemWords.length; j++){
-                if(userProblemWords[i] === knownProblemWords[j]) m++
+                if(wordMatches(userProblemWords[i], knownProblemWords[j])) m++
             }
         }
         return m
