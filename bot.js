@@ -72,6 +72,25 @@ function wordMatches(word1, word2){
     return word1.toLowerCase() === word2.toLowerCase();
 }
 
+let sessionEndChecker ={ 
+    sessionEndSentences: [
+        'ja',
+        'det gjorde det',
+        'jepp',
+        'japp',
+        'yes',
+        'yepp',
+        'yapp',
+        'Jada',
+        'det løste problemet',
+        'muligens'
+    ],
+    shouldSessionEnd: function(string){
+        if(sessionEndSentences.indexOf(string.replace(/\W/g, '').split(' ').first()) > -1) return true;
+
+    }
+}
+
 let prefix = {
     prefixCollection: [
         'Hmm, la meg se.',
