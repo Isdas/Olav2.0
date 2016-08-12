@@ -61,7 +61,7 @@ bot.dialog('/profile', [
             problemLogic.setMatchNumber(problemLogic.userProblem)
         }
         problemLogic.solution = problemLogic.response(problemLogic.userProblem)
-        if(wordMatches(results.response,"ja"))
+        if(sessionEndChecker.shouldSessionEnd(results.response))
             session.endDialog()
         else
             session.beginDialog('/profile')
@@ -89,9 +89,13 @@ let sessionEndChecker ={
         'selvsagt',
         'det virker sånn'
     ],
-    shouldSessionEnd: function(string){
-        if(sessionEndSentences.indexOf(string.replace(/\W/g, '').split(' ').first()) > -1) return true;
-
+    shouldSessionEnd: function(text){
+        let words = text.replace(/[^a-å0-9+]+/gi, ' ').split(' ');
+        for(var i=0; i<words.length; i++)
+        {
+            if(this.sessionEndSentences.indexOf(words[i].toLowerCase()) > -1) return true;
+        }
+        return false;
     }
 }
 
