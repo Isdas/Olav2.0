@@ -26,7 +26,7 @@ bot.dialog('/', [
     },
     function (session, results) {
         problemLogic.clearData()
-        session.send('Ha det på badet')
+        session.send(goodbyeMessage.getGoodbyeMessage())
         session.endDialog()
     }
 ])
@@ -40,7 +40,7 @@ bot.dialog('/profile', [
             session.endDialog()
         }
         else
-            builder.Prompts.text(session, 'Forslag: ' + problemLogic.solution + '.\n\tLøste det problemet ditt?')
+            builder.Prompts.text(session, prefix.getPrefix() + ' ' + problemLogic.solution + '. ' + postfix.getPostfix())
     },
     function (session, results) {
         if(problemLogic.userProblem === undefined)
@@ -55,6 +55,59 @@ bot.dialog('/profile', [
             session.beginDialog('/profile')
     }
 ])
+
+let prefix = {
+    prefixCollection: [
+        'Hmm, la meg se.',
+        'Kanskje dette kan hjelpe?',
+        'Dette hørtes rart ut. Du kan prøve følgende:',
+        'En kollega har vært borti dette før. Han sier:',
+        'Jeg har sjekket med en kollega. Han sa:',
+        'Dette er enkelt.',
+        'Nå måtte jeg tenke meg litt om.',
+        'Jeg skjønner.',
+        'Jeg er litt usikker på om dette kan funke.',
+        'Dette var en nøtt.'
+    ],
+    getPrefix: function(){
+        return this.prefixCollection[randomInt(this.prefixCollection.length)]
+    }
+}
+
+let postfix = {
+    postfixCollection: [
+        'Løste det problemet ditt?',
+        'Hjalp det?',
+        'Fungerte det?',
+        'Dette har hjulpet mange kunder før. Hjalp det deg?',
+        'Var det til hjelp?',
+        'Kom du nærmere en løsning?',
+        'Har du fortsatt problemet?',
+        'Trenger du et løsningsforslag til?',
+        'Var dette til hjelp?',
+        'Var det en OK løsning?'
+    ],
+    getPostfix: function(){
+        return this.postfixCollection[randomInt(this.postfixCollection.length)]
+    }
+}
+
+let goodbyeMessage = {
+    goodbyeCollection: [
+        'Takk for at brukte Olav 2.0. Velkommen tilbake',
+        'Ha en fin dag',
+        'Jeg vet hvor du bor. Jeg tar meg en liten tur innom senere. Hade.',
+        'Håper du likte å bruke Olav 2.0. Hade',
+        'Håper jeg var til hjelp. Nå går jeg og spiller Pokémon Go!',
+    ],
+    getGoodbyeMessage: function(){
+        return this.goodbyeCollection[randomInt(this.goodbyeCollection.length)]
+    }
+}
+
+function randomInt(size){
+    return Math.floor(Math.random() * size)
+}
 
 let problemLogic = {
     solution: undefined,
