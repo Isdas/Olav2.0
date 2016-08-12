@@ -1,6 +1,8 @@
 var builder = require('botbuilder')
 var restify = require('restify')
 
+var delay = 2000
+
 // Setup Restify Server
 server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
@@ -26,8 +28,10 @@ bot.dialog('/', [
     },
     function (session, results) {
         problemLogic.clearData()
-        session.send(goodbyeMessage.getGoodbyeMessage())
-        session.endDialog()
+        setTimeout(function() {
+            session.send(goodbyeMessage.getGoodbyeMessage())
+            session.endDialog()
+        }, delay);
     }
 ])
 bot.dialog('/profile', [
@@ -36,11 +40,19 @@ bot.dialog('/profile', [
             builder.Prompts.text(session, 'Hei! Jeg er en digital Olav. Du kan kalle meg Olav 2.0. Hva kan jeg hjelpe deg med?')
         else if (problemLogic.solution === constants.noSolution)
         {
-            session.send(problemLogic.solution)
-            session.endDialog()
+            setTimeout(function() {
+                session.send(problemLogic.solution)
+                session.endDialog()
+            }, delay);
         }
         else
-            builder.Prompts.text(session, prefix.getPrefix() + ' ' + problemLogic.solution + '. ' + postfix.getPostfix())
+        {
+            setTimeout(function()
+            {
+                builder.Prompts.text(session, prefix.getPrefix() + ' ' + problemLogic.solution + '. ' + postfix.getPostfix())
+            }
+            , delay)
+        }
     },
     function (session, results) {
         if(problemLogic.userProblem === undefined)
