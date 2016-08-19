@@ -90,10 +90,11 @@ let sessionEndChecker ={
         'det virker sånn'
     ],
     shouldSessionEnd: function(text){
-        let words = text.replace(/[^a-å0-9+]+/gi, ' ').split(' ');
+        let words = text.replace(/[^a-å+]+/gi, ' ').split(' ');
         for(var i=0; i<words.length; i++)
         {
-            if(this.sessionEndSentences.indexOf(words[i].toLowerCase()) > -1) return true;
+            if(this.sessionEndSentences.indexOf(words[i].toLowerCase()) > -1)
+                return true;
         }
         return false;
     }
