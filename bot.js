@@ -127,7 +127,6 @@ let postfix = {
         'Var det til hjelp?',
         'Kom du nærmere en løsning?',
         'Har du fortsatt problemet?',
-        'Trenger du et løsningsforslag til?',
         'Var dette til hjelp?',
         'Var det en OK løsning?'
     ],
