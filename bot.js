@@ -38,6 +38,11 @@ bot.dialog('/profile', [
     function (session) {
         if(problemLogic.solution === undefined)
             builder.Prompts.text(session, 'Hei! Jeg er en digital Olav. Du kan kalle meg Olav 2.0. Hva kan jeg hjelpe deg med?')
+        else if(problemLogic.userProblem === undefined)
+        {
+            problemLogic.clearData()
+            builder.Prompts.text(session, 'Definer problemet på nytt, erru snill')
+        }
         else if (problemLogic.solution === constants.noSolution)
         {
             setTimeout(function() {
@@ -61,6 +66,10 @@ bot.dialog('/profile', [
             problemLogic.setMatchNumber(problemLogic.userProblem)
         }
         problemLogic.solution = problemLogic.response(problemLogic.userProblem)
+
+        if(sessionRestartChecker.shouldSessionRestart(results.response))
+            problemLogic.userProblem = undefined
+
         if(sessionEndChecker.shouldSessionEnd(results.response))
             session.endDialog()
         else
@@ -90,13 +99,24 @@ let sessionEndChecker ={
         'det virker sånn'
     ],
     shouldSessionEnd: function(text){
-        let words = text.replace(/[^a-å+]+/gi, ' ').split(' ');
+        let words = text.replace(/[^a-å+]+/gi, ' ').split(' ')
         for(var i=0; i<words.length; i++)
-        {
             if(this.sessionEndSentences.indexOf(words[i].toLowerCase()) > -1)
-                return true;
-        }
-        return false;
+                return true
+        return false
+    }
+}
+
+let sessionRestartChecker ={ 
+    sessionRestartSentences: [
+        'REstart',
+    ],
+    shouldSessionRestart: function(text){
+        let words = text.replace(/[^a-å+]+/gi, ' ').split(' ')
+        for(var i=0; i<words.length; i++)
+            if(this.sessionRestartSentences.indexOf(words[i]) > -1)
+                return true
+        return false
     }
 }
 
