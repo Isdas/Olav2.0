@@ -41,7 +41,11 @@ bot.dialog('/profile', [
         else if(problemLogic.userProblem === undefined)
         {
             problemLogic.clearData()
-            builder.Prompts.text(session, 'Definer problemet på nytt, erru snill')
+            setTimeout(function()
+            {
+                builder.Prompts.text(session, 'Definer problemet på nytt, erru snill')
+            }
+            , delay)
         }
         else if (problemLogic.solution === constants.noSolution)
         {
@@ -99,9 +103,9 @@ let sessionEndChecker ={
         'det virker sånn'
     ],
     shouldSessionEnd: function(text){
-        let words = text.replace(/[^a-å+]+/gi, ' ').split(' ')
+        let words = text.toLowerCase().replace(/[^a-å+]+/gi, ' ').split(' ')
         for(var i=0; i<words.length; i++)
-            if(this.sessionEndSentences.indexOf(words[i].toLowerCase()) > -1)
+            if(this.sessionEndSentences.indexOf(words[i]) > -1)
                 return true
         return false
     }
@@ -109,10 +113,10 @@ let sessionEndChecker ={
 
 let sessionRestartChecker ={ 
     sessionRestartSentences: [
-        'REstart',
+        're',
     ],
     shouldSessionRestart: function(text){
-        let words = text.replace(/[^a-å+]+/gi, ' ').split(' ')
+        let words = text.toLowerCase().replace(/[^a-å+]+/gi, ' ').split(' ')
         for(var i=0; i<words.length; i++)
             if(this.sessionRestartSentences.indexOf(words[i]) > -1)
                 return true
@@ -165,6 +169,32 @@ let goodbyeMessage = {
     ],
     getGoodbyeMessage: function(){
         return this.goodbyeCollection[randomInt(this.goodbyeCollection.length)]
+    }
+}
+
+function wordMatch(string1, string2, double)
+{
+    if(string1 === string2)
+        return 100
+
+    var subStrings = []
+    var letters2 = string2.split('')
+    var points = 0
+    var index = 0
+    for(j=1;j + 1<letters2.length;j++)
+    {
+         subStrings[j] = string2.subStrings(j, letters2.length - 1)
+         index++
+    }
+
+    // Sort the other way to
+
+    for(i=0;i<subStrings.length;i++)
+    {
+        if(string1.indexOf(subStrings[i] !== -1))
+        {
+            points = points + subStrings[i].length;
+        }
     }
 }
 
